@@ -10,29 +10,29 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.title().should('be.equal','Central de Atendimento ao Cliente TAT')
         cy.get('input[id="firstName"]').type('João Victor').should('have.value','João Victor')
     })
+    
+    Cypress._.times(2, function() {
+        it('Preenchimento dos Campos Obrigatórios', function() {
+            const observacoes = 'Gostaria de mais informações sobre os meios de pagamento, vocês aceitam cartão ou fazem via pix'
+            //Preenchimento do Campo Nome
+            cy.get('input[id="firstName"]').type('João Victor').should('have.value','João Victor')
+    
+            //Preenchimento do Campo Sobrenome
+            cy.get('input[id="lastName"]').type('Alves Penteado').should('have.value','Alves Penteado')
+    
+            //Preenchimento do Campo E-mail
+            cy.get('input[id="email"]').type('joaovpenteado@gmail.com')
+    
+            //Preenchimento do Campo Obs
+            cy.get('textarea[id="open-text-area"]').type(observacoes, {delay: 0})
+    
+            //Valida Mensagem de Sucesso com Função Clock e Tick
+            cy.validaMensagem('.success')
+            
+        })
 
-    it('Preenchimento dos Campos Obrigatórios', function() {
-
-        const observacoes = 'Gostaria de mais informações sobre os meios de pagamento, vocês aceitam cartão ou fazem via pix'
-        //Preenchimento do Campo Nome
-        cy.get('input[id="firstName"]').type('João Victor').should('have.value','João Victor')
-
-        //Preenchimento do Campo Sobrenome
-        cy.get('input[id="lastName"]').type('Alves Penteado').should('have.value','Alves Penteado')
-
-        //Preenchimento do Campo E-mail
-        cy.get('input[id="email"]').type('joaovpenteado@gmail.com')
-
-        //Preenchimento do Campo Obs
-        cy.get('textarea[id="open-text-area"]').type(observacoes, {delay: 0})
-
-        //Clica no botão Enviar
-        cy.get('button[type="submit"]').click()
-
-        //Valida Mensagem de Sucesso
-        cy.get('.success').should('be.visible')
-        
     })
+
     it('Validação Mensagem de Erro', function(){
 
         //Preenchimento do Campo Nome
@@ -44,8 +44,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         //Clica no botão Enviar
         cy.get('button[type="submit"]').click()
 
-        //Valida Mensagem de Sucesso
-        cy.get('.error ').should('be.visible')
+        //Valida Mensagem de Erro
+        cy.validaMensagem('.error')
 
     })
 
@@ -85,12 +85,11 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         //Clica no botão Enviar
         cy.contains('button','Enviar').click()
 
-        //Valida Mensagem de Sucesso
-        cy.get('.error ').should('be.visible')
+        //Valida Mensagem de Erro
+        cy.validaMensagem('.error')
 
    })
    it('Preenche e Limpa Campos', function(){
-
         const observacoes = 'Gostaria de mais informações sobre os meios de pagamento, vocês aceitam cartão ou fazem via pix'
 
         //Preenchimento do Campo Nome
@@ -124,8 +123,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
            //Clica no botão Enviar
            cy.get('button[type="submit"]').click()
 
-           //Valida Mensagem de Sucesso
-           cy.get('.error ').should('be.visible')
+           //Valida Mensagem de Erro
+           cy.validaMensagem('.error')
 
     })
 
@@ -163,8 +162,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         //Clica no botão Enviar
         cy.contains('button','Enviar').click()
 
-        //Valida Mensagem de Sucesso
-        cy.get('.error ').should('be.visible')
+        //Valida Mensagem de Erro
+        cy.validaMensagem('.error')
     })
 
     it('Preencha os campos e Selecione um Produto: Blog', function(){
@@ -191,7 +190,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         //Clica no botão Enviar
         cy.contains('button','Enviar').click()
 
-        //Valida Mensagem de Sucesso
+        //Valida Mensagem de Erro
         cy.get('.error ').should('be.visible')
     })
     it('Seleciona o Radio Feedback', function(){
@@ -221,7 +220,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         //Clica no botão Enviar
         cy.contains('button','Enviar').click()
 
-        //Valida Mensagem de Sucesso
+        //Valida Mensagem de Erro
         cy.get('.error ').should('be.visible')
     })
 
@@ -266,6 +265,20 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         .selectFile('cypress/fixtures/example.json', {action: 'drag-drop'})
         .should(function($input) {
           expect($input[0].files[0].name).to.equal('example.json')})
+
+    })
+
+    it('Exibe e Esconde Mensagens de Erro e Sucesso', function() {
+        cy.get('.success')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible').and('contain', 'Mensagem enviada com sucesso.')
+        .invoke('hide').should('not.be.visible')
+        cy.get('.error')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible').and('contain','Valide os campos obrigatórios!')
+        .invoke('hide').should('not.be.visible')
 
     })
 
@@ -315,6 +328,47 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
         cy.contains('Talking About Testing').should('be.visible')
     
+
+    })
+
+    it('Preenche Text Area usando invoke', function() {
+
+        const observacoes = Cypress._.repeat('teste', 20)
+        //Preenchimento do Campo Nome
+        cy.get('input[id="firstName"]').type('João Victor').should('have.value','João Victor')
+
+        //Preenchimento do Campo Sobrenome
+        cy.get('input[id="lastName"]').type('Alves Penteado').should('have.value','Alves Penteado')
+
+        //Preenchimento do Campo E-mail
+        cy.get('input[id="email"]').type('joaovpenteado@gmail.com')
+
+        //Preenchimento do Campo Obs
+        cy.get('textarea[id="open-text-area"]').invoke('val', observacoes)
+        .should('have.value', observacoes)
+
+    })
+
+    it.only('Desafio ache o gato', function() {
+        //Habilita visão do Gato
+        cy.get('span[id="cat"]').invoke('show')
+        .should('be.visible')
+  
+    })
+
+
+    
+
+    it('Requisição HTTP', function() {
+        cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+         .should(function(response){
+            const { status , statusText , body } = response
+            expect(status).to.equal(200)
+            expect(statusText).to.equal('OK')
+            expect(body).to.include('CAC TAT')
+
+         })
+
 
     })
 

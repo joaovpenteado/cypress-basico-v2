@@ -8,3 +8,11 @@ Cypress.Commands.add('fillMandatoryFieldsAndSubmit', function() {
     cy.get('.success').should('be.visible')
 
 })
+
+Cypress.Commands.add('validaMensagem', function(nomeAtributo) {
+    cy.clock()
+    cy.get('button[type="submit"]').click()
+    cy.get(nomeAtributo).should('be.visible')
+    cy.tick(3000)
+    cy.get(nomeAtributo).should('not.be.visible')
+})
